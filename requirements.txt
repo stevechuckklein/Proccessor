@@ -11,7 +11,7 @@ constantly==15.1.0
 cryptography==2.6.1
 cssselect==1.0.3
 cycler==0.10.0
-Django==2.2.1
+Django==2.2.13
 filetype==1.0.5
 future==0.17.1
 hyperlink==19.0.0
