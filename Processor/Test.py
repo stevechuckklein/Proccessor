@@ -196,7 +196,7 @@ sample = process_nda(path, byte_one)
 # print(sample);
 
 def txt_out(dict):
-    with open('sample.txt','w') as f:
+    with open('ideas.txt','w') as f:
         for item in dict:
             print(item, file=f)
 

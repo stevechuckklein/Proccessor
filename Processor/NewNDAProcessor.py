@@ -10,6 +10,7 @@ import numpy as np
 import os.path
 import errno
 
+# cffi==1.12.3
 
 # Matplotlib Stuff
 # import matplotlib as mlp
@@ -360,9 +361,9 @@ def process_datapoint_list(datapoint_list):
 
             # Hacky way to handle rest step
             # This will probably break if the first step is a rest
-            if datapoint.get('step_type_id', 0) is 4:
+            if datapoint.get('step_type_id', 0) == 4:
                 # This is a rest
-                if len(current_cycle['datapoints']) is 0:
+                if len(current_cycle['datapoints']) == 0:
                     # This is the first datapoint for this cycle
                     datapoint['chg_Ah'] = 0
                     datapoint['chg_Wh'] = 0
@@ -375,7 +376,7 @@ def process_datapoint_list(datapoint_list):
                     datapoint['dch_Wh'] = current_cycle['datapoints'][-1].get('dch_Wh', 0)
             else:
                 # If this is the first datapoint of the cycle
-                if len(current_cycle['datapoints']) is 0:
+                if len(current_cycle['datapoints']) == 0:
                     datapoint['chg_Ah'] = 0
                     datapoint['chg_Wh'] = 0
                     datapoint['dch_Ah'] = 0
@@ -690,15 +691,15 @@ def save_datapoints(cycle_list, out_filename, csv_line_order=['record_id', 'test
 
             csv_line = []
             for key in csv_line_order:
-                if (key is 'time_in_step') or (key is 'test_time'):
+                if (key == 'time_in_step') or (key == 'test_time'):
                     seconds = dp.get(key)
                     m, s = divmod(seconds, 60)
                     h, m = divmod(m, 60)
                     # csv_line.append("%d:%02d:%02d" % (h, m, s))
                     csv_line.append("{:0.0f}:{:02.0f}:{:0.3f}".format(h, m, s))
-                elif key is 'voltage':
+                elif key == 'voltage':
                     csv_line.append(dp.get(key, 0) / 10000)
-                elif key is 'current':
+                elif key == 'current':
                     csv_line.append(dp.get(key, 0) / 100000)
                 elif ('_Ah' in key) or ('_Wh' in key):
                     csv_line.append(dp.get(key, 0) / 360000000)
@@ -956,194 +957,17 @@ def main():
     #     nda_path = "U:\\Cell Testing\\Formation Data\\Processed Data\\{0}\\NDA\\".format(job_id)  # Where the NDA files are
     #     process_formation(csv_filename, out_path, nda_path)
 
+    # Dummy Long-Term Cycling
+    csv_filename = "D:\\Program\\Sample\\Sample Cycling.csv"
+    out_path = "D:\\Program\\Sample\\"
+    nda_path = "D:\\Program\\Sample\\NDA\\"
+    process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
+
     # # Kuraray Long-Term Cycling
     # csv_filename = "U:\\Cell Testing\\Cycle Data\\Processed Data\\Kuraray Cycling.csv"
     # out_path = "U:\\Cell Testing\\Cycle Data\\Processed Data\\Kuraray\\"
     # nda_path = "U:\\Cell Testing\\Cycle Data\\Raw Data Files\\"
     # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-
-    # OLiP Processing (U drive XFC ONLY)
-
-    # job_ids = ["2001-X01.3"]
-    # for job_id in job_ids:
-    #     csv_filename = 'U:\\Cell Testing\\OLiP Data\\Processed Data\\XFC\\{0}\\{0} - OLiP.csv'.format(job_id)
-    #     out_path = os.path.dirname(csv_filename)
-    #     nda_path = "U:\\Cell Testing\\OLiP Data\\Raw Data Files (NDA)"
-    #     process_olip(csv_filename, out_path, nda_path)
-
-
-
-    # OLiP Processing (U drive)
-    #
-    # job_ids = ["2004-BR01-01"]
-    # for job_id in job_ids:
-    #     csv_filename = "U:\\Plating\\Processed\\{0}\\{0} - OLiP.csv".format(job_id)
-    #     # csv_filename = "U:\\Plating\\Processed\\{0}\\{0} - XFC.csv".format(job_id)
-    #     out_path = os.path.dirname(csv_filename)
-    #     nda_path = "U:\\Plating\\Processed\\{0}\\NDA".format(job_id)
-    #     process_olip(csv_filename, out_path, nda_path)
-
-    # Rate Testing Attempt - XFC
-    # #
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # csv_filename = "U:\\Cycling\\New Processed\\Stryker - High Power\\Stryker High Power Rate cycling - 200212.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Stryker - High Power\\Rate Testing\\Dchg Rate Testing\\"
-    # process_olip(csv_filename,out_path,nda_path)
-
-    # Long-Term Cycling
-    #  nda_path = "U:\\Cycling\\NDA Files\\"
-
-    # Liacon Stuff
-    #
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # csv_filename = "U:\\Cycling\\New Processed\\Liacon\\Liacon Charge Rate Testing.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Liacon\\Rate Testing\\Chg Rate Testing\\"
-    # process_olip(csv_filename,out_path,nda_path)
-
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # csv_filename = "U:\\Cycling\\New Processed\\Liacon\\Liacon Discharge Rate Testing.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Liacon\\Rate Testing\\Dchg Rate Testing\\"
-    # process_olip(csv_filename,out_path,nda_path)
-
-    #
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # csv_filename = "U:\\Cycling\\New Processed\\Liacon\\Calendar Life Cycling.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Liacon\\Cycling\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=True)
-
-    # PPG Long-Term Cycling
-
-    # csv_filename = "U:\\Cycling\\Old PPG PW.csv"
-    # out_path = "U:\\Cycling\\New Processed\\PPG\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=True)
-
-    # Apple Long-Term Cycling
-
-    # csv_filename = "U:\\Cycling\\Apple Pouch Cycling.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Apple\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=True)
-
-    # PUREgraphite Long-Term Cycling
-    #
-    # csv_filename = "U:\\Cycling\\PUREgraphite New Cycling.csv"
-    # # csv_filename = "U:\\Cycling\\PUREgraphite New Cycling Testing.csv"
-    #
-    # out_path = "U:\\Cycling\\New Processed\\PUREgraphite\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path)
-    # # process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=True)
-
-    # DOE Si Long-Term Cycling
-    #
-    # csv_filename = "U:\\Cycling\\DOE Si New Cycling.csv"
-    # csv_filename = "U:\\Cycling\\PUREgraphite New Cycling Testing.csv"
-
-    # out_path = "U:\\Cycling\\Processed\\New Processed\\DOE Si"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path)
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True)
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=True)
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True, force_processing=True)
-
-    # Trion Long-Term Cycling
-
-    # csv_filename = "U:\\Cycling\\Trion New Cycling.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Trion\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True, force_processing=True)
-
-    # # XFC Long-Term Cycling
-    # #
-    # csv_filename = "U:\\Cycling\\XFC New Cycling.csv"
-    # out_path = "U:\\Cycling\\New Processed\\XFC\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # # process_long_term_cycling(csv_filename, out_path, nda_path)
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=True)
-
-
-    # XFC OLiP Long-Term Cycling
-
-    # job_ids = ["1907-X02"]
-    # for job_id in job_ids:
-    #   csv_filename = "Z:\\Plating\\Processed\\{0}\\{0} - OLiP.csv".format(job_id)
-    #   out_path = "Z:\\Plating\\Processed\\{0}\\Datapoints".format(job_id)
-    #   nda_path = "Z:\\Plating\\Processed\\{0}\\NDA".format(job_id)
-    #   process_long_term_cycling(csv_filename, out_path, nda_path, output_datapoints=True, force_processing=True)
-    #   process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=True)
-
-    # YTC Long-Term Cycling
-    #
-    # csv_filename = "U:\\Cycling\\YTC New Cycling.csv"
-    # out_path = "U:\\Cycling\\New Processed\\YTC\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-
-    # Nanotech Long-Term Cycling
-    #
-    # csv_filename = "Z:\\Cycling\\Nanotech Cycling.csv"
-    # out_path = "Z:\\Cycling\\New Processed\\"
-    # nda_path = "Z:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling(csv_filename, out_path, nda_path)
-
-    # #Rayovac Long-Term Cycling
-    #
-    # csv_filename = "U:\\Cycling\\Rayovac New Cycling.csv"
-    # out_path = "U:\\Cycling\\Processed\\New Processed\\Rayovac\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-
-    # Rate Test Shit
-    # csv_filename = "U:\\Cycling\\NMC622 Rate Test.csv"
-    # out_path = "U:\\Cycling\\New Processed\\ACCORDEL\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-
-    #Styker Rate testing
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # csv_filename = "U:\\Cycling\\Stryker High Temp Rate cycling.csv"
-    # out_path = "U:\\Cycling\\Processed\\New Processed\\Stryker - High Temp\\"
-    # process_olip(csv_filename, out_path, nda_path)
-
-    # # Kuraray Long-Term Cycling
-    # csv_filename = "U:\\Cycling\\Kuraray Cycling.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Kuraray\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-
-    # csv_filename = "U:\\Cycling\\DOE Si New Cycling.csv"
-    # out_path = "U:\\Cycling\\Processed\\New Processed\\DOE Si"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True, force_processing=True)
-
-    # Neware Troubleshooting
-    #
-    # csv_filename = "U:\\Cycling\\Neware Issue.csv"
-    # out_path = "U:\\Cycling\\New Processed\\Neware\\"
-    # nda_path = "U:\\Cycling\\NDA Files\\"
-    # process_long_term_cycling(csv_filename, out_path, nda_path, output_datapoints=True)
-
-    # Profiling
-    #
-    # def timeit_stub():
-    #     nda_filename = "U:\\Cycling\\NDA Files\\240012-6-2-25.nda"
-    #     start_byte = find_start_byte(nda_filename)
-    #     current_datapoint_list = process_nda(nda_filename, start_byte)
-    #
-    # def timeit_stub_df():
-    #     nda_filename = "U:\\Cycling\\NDA Files\\240012-6-2-25.nda"
-    #     start_byte = find_start_byte(nda_filename)
-    #     current_datapoint_df = process_nda_to_dataframe(nda_filename, start_byte)
-    #     # print(current_datapoint_df.head())
-    #
-    # # timeit_stub()
-    # # timeit_stub_df()
-    #
-    # print(timeit.repeat(timeit_stub, number=1, repeat=3))
-    # print(timeit.repeat(timeit_stub_df, number=1, repeat=3))
-    # print("Process Complete")
-
 
 if __name__ == "__main__":
     main()
