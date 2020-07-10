@@ -4,6 +4,9 @@ import numpy as np
 import os.path
 import pandas as pd
 
+from tkinter import *
+from tkinter import filedialog
+
 # For step_id comparisons to determine if we are charging or discharging.
 CHARGING_STEP_TYPE_IDS = [1, 3, 7]
 DISCHARGING_STEP_TYPE_IDS = [2, 19, 20]
@@ -628,8 +631,38 @@ def save_datapoints(cycle_list, out_filename, csv_line_order=['record_id', 'test
             row_count += 1
     outfile.close()
 
+def get_file_path():
+    root = Tk()
+    root.withdraw() # hides tk window
 
-def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=False, output_datapoints=False):
+    path_name = filedialog.askopenfilename()
+
+    root.quit() # exits without destroying widgets
+
+    return path_name
+
+def get_dir_path():
+    root = Tk()
+    root.withdraw()
+
+    dir_path = filedialog.askdirectory()
+
+    root.quit()
+    return dir_path
+
+
+# def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=False, output_datapoints=False):
+
+def process_long_term_cycling_new(force_processing=False, output_datapoints=False):
+
+    # csv_filename = get_file_path()
+    # out_path = get_dir_path()
+    # nda_path = get_dir_path()
+
+    csv_filename = filedialog.askopenfilename(title='Pick Your Base CSV File.')
+    out_path = filedialog.askdirectory(title='Where Do You Want Your Processed Data?')
+    nda_path = filedialog.askdirectory(title='Where Are Your NDA Files?')
+
     files_to_process = pd.read_csv(csv_filename)
 
     for index, row in files_to_process.iterrows():
@@ -697,7 +730,7 @@ def main():
     # out_path = "D:\\Program\\Sample\\"
     # nda_path = "D:\\Program\\Sample\\NDA\\"
     # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-
+    process_long_term_cycling_new(output_datapoints=True,force_processing=True)
 
 
 if __name__ == "__main__":
