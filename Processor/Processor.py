@@ -722,6 +722,47 @@ def process_long_term_cycling_new(force_processing=False, output_datapoints=Fals
     files_to_process.to_csv(csv_filename, index=False)
 
 
+def process_formation(csv_filename, out_path, nda_path):
+    files_to_process = pd.read_csv(csv_filename)
+
+    for index, row in files_to_process.iterrows():
+        if row['nda_file'] == "Novonix":
+            print("Skipping Novonix cell")
+        else:
+            # TODO: Check for blank lines
+            current_nda_filename = os.path.join(nda_path, str(row['nda_file']))
+            if os.path.isfile(current_nda_filename):
+                print("Processing: ", row['nda_file'])
+                start_byte = find_start_byte(current_nda_filename)
+                current_datapoint_list = process_nda(current_nda_filename, start_byte)
+                current_cycle_list = process_datapoint_list(current_datapoint_list)
+                process_datapoints(current_cycle_list)
+                process_cycle_list(current_cycle_list)
+
+                save_datapoints(current_cycle_list, os.path.join(out_path, row['out_file']), formation=True)
+                # Output cycle data if necessary
+                # save_cycle_data(current_cycle_list, os.path.join(out_path, row['out_file']), omit_last_cycle=False)
+
+                chg_Ah, dch_Ah = current_cycle_list[0]['chg_Ah'], current_cycle_list[0]['dch_Ah']
+                chg_Wh, dch_Wh = current_cycle_list[0]['chg_Wh'], current_cycle_list[0]['dch_Wh']
+                chg_V, dch_V = current_cycle_list[0]['chg_V'], current_cycle_list[0]['dch_V']
+                # For cells where cycle 2 is actually the first cycle
+                # chg_Ah, dch_Ah = current_cycle_list[1]['chg_Ah'], current_cycle_list[1]['dch_Ah']
+                files_to_process.at[index, 'chg_Ah'] = chg_Ah
+                files_to_process.at[index, 'dch_Ah'] = dch_Ah
+                files_to_process.at[index, 'chg_mAh'] = chg_Ah * 1000
+                files_to_process.at[index, 'dch_mAh'] = dch_Ah * 1000
+                if chg_Ah != 0:
+                    files_to_process.at[index, 'fce'] = dch_Ah / chg_Ah
+                files_to_process.at[index, 'chg_Wh'] = chg_Wh
+                files_to_process.at[index, 'dch_Wh'] = dch_Wh
+                files_to_process.at[index, 'chg_V'] = chg_V
+                files_to_process.at[index, 'dch_V'] = dch_V
+            else:
+                print('Error: Couldn\'t find file ' + str(row['nda_file']))
+    files_to_process.to_csv(csv_filename, index=False)
+
+
 
 def main():
 
@@ -730,7 +771,15 @@ def main():
     # out_path = "D:\\Program\\Sample\\"
     # nda_path = "D:\\Program\\Sample\\NDA\\"
     # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-    process_long_term_cycling_new(output_datapoints=True,force_processing=True)
+    # process_long_term_cycling_new(output_datapoints=True,force_processing=True)
+
+     # Formation Processing
+    # job_ids = ["2004-SE01"]
+    # for job_id in job_ids:
+    #     csv_filename = "U:\\Cycling\\Formation\\{0}\\{0} - Formation.csv".format(job_id)
+    #     out_path = os.path.dirname(csv_filename)  # For now, formation out_path is same as csv_path
+    #     nda_path = "U:\\Cycling\\Formation\\{0}\\NDA\\".format(job_id)  # Where the NDA files are
+    #     process_formation(csv_filename,out_path,nda_path)
 
 
 if __name__ == "__main__":
