@@ -5,7 +5,6 @@ from tkinter import filedialog
 import tkinter.font as font
 
 root = Tk(className=" Choose Data Processing Program")
-# root.geometry("400x400")
 
 myFont = font.Font(size=25)
 

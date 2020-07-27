@@ -631,37 +631,8 @@ def save_datapoints(cycle_list, out_filename, csv_line_order=['record_id', 'test
             row_count += 1
     outfile.close()
 
-def get_file_path():
-    root = Tk()
-    root.withdraw() # hides tk window
 
-    path_name = filedialog.askopenfilename()
-
-    root.quit() # exits without destroying widgets
-
-    return path_name
-
-def get_dir_path():
-    root = Tk()
-    root.withdraw()
-
-    dir_path = filedialog.askdirectory()
-
-    root.quit()
-    return dir_path
-
-
-# def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=False, output_datapoints=False):
-
-def process_long_term_cycling_new(force_processing=False, output_datapoints=False):
-
-    # csv_filename = get_file_path()
-    # out_path = get_dir_path()
-    # nda_path = get_dir_path()
-
-    csv_filename = filedialog.askopenfilename(title='Pick Your Base CSV File.')
-    out_path = filedialog.askdirectory(title='Where Do You Want Your Processed Data?')
-    nda_path = filedialog.askdirectory(title='Where Are Your NDA Files?')
+def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=False, output_datapoints=False):
 
     files_to_process = pd.read_csv(csv_filename)
 
@@ -711,6 +682,7 @@ def process_long_term_cycling_new(force_processing=False, output_datapoints=Fals
                 # Debug
                 if output_datapoints:
                     save_datapoints(current_cycle_list, os.path.join(out_path, row['out_file']))
+                print('Finished: ', row['nda_file'])
             else:
                 print('Error: NDA file size has not changed since file last processed.  Skipping...')
 
@@ -761,26 +733,3 @@ def process_formation(csv_filename, out_path, nda_path):
             else:
                 print('Error: Couldn\'t find file ' + str(row['nda_file']))
     files_to_process.to_csv(csv_filename, index=False)
-
-
-
-def main():
-
-    # # Dummy Long-Term Cycling
-    # csv_filename = "D:\\Program\\Sample\\Sample Cycling.csv"
-    # out_path = "D:\\Program\\Sample\\"
-    # nda_path = "D:\\Program\\Sample\\NDA\\"
-    # process_long_term_cycling_new(csv_filename, out_path, nda_path, output_datapoints=True,force_processing=True)
-    # process_long_term_cycling_new(output_datapoints=True,force_processing=True)
-
-     # Formation Processing
-    # job_ids = ["2004-SE01"]
-    # for job_id in job_ids:
-    #     csv_filename = "U:\\Cycling\\Formation\\{0}\\{0} - Formation.csv".format(job_id)
-    #     out_path = os.path.dirname(csv_filename)  # For now, formation out_path is same as csv_path
-    #     nda_path = "U:\\Cycling\\Formation\\{0}\\NDA\\".format(job_id)  # Where the NDA files are
-    #     process_formation(csv_filename,out_path,nda_path)
-
-
-if __name__ == "__main__":
-    main()
