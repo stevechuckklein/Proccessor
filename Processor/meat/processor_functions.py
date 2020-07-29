@@ -709,7 +709,7 @@ def process_formation(csv_filename, out_path, nda_path):
                 current_datapoint_list = process_nda(current_nda_filename, start_byte)
                 current_cycle_list = process_datapoint_list(current_datapoint_list)
                 process_datapoints(current_cycle_list)
-                process_cycle_list(current_cycle_list)
+                process_cycle_list_new(current_cycle_list)
 
                 save_datapoints(current_cycle_list, os.path.join(out_path, row['out_file']), formation=True)
                 # Output cycle data if necessary

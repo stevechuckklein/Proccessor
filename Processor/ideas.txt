@@ -1,4 +1,4 @@
 
-
-1) Write a way to automatically add NDA names to first column of cycling sheet
-2)
+- Make a Process OLIP button
+	- Normalize Cycle needs an input for this
+	

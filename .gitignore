@@ -1,1 +1,5 @@
 venv/
+Processor/__pycache__
+Processor/build
+Processor/dist
+Processor/main.spec
