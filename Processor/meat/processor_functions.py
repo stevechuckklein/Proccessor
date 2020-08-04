@@ -733,3 +733,40 @@ def process_formation(csv_filename, out_path, nda_path):
             else:
                 print('Error: Couldn\'t find file ' + str(row['nda_file']))
     files_to_process.to_csv(csv_filename, index=False)
+
+
+def process_olip(csv_filename, out_path, nda_path, cycle_num):
+    files_to_process = pd.read_csv(csv_filename)
+
+    for index, row in files_to_process.iterrows():
+        current_nda_filename = os.path.join(nda_path, row['nda_file'])
+        if os.path.isfile(current_nda_filename):
+            print("Processing: ", row['nda_file'])
+            start_byte = find_start_byte(current_nda_filename)
+            current_datapoint_list = process_nda(current_nda_filename, start_byte)
+            current_cycle_list = process_datapoint_list(current_datapoint_list)
+            normalize_cycle = row.get('normalize_cycle', cycle_num)
+            print("Normalize Cycle = {}".format(normalize_cycle))
+            process_cycle_list_new(current_cycle_list, normalize_to_cycle=normalize_cycle)
+            save_cycle_data(current_cycle_list, os.path.join(out_path, row['out_file']))
+
+            save_datapoints(current_cycle_list, os.path.join(out_path, row['out_file']))
+            # Try to save the data points for just the first full cycle and the second to last cycle.
+            # save_datapoints([current_cycle_list[e] for e in (1,-2)], os.path.join(out_path, row['out_file']))
+
+            if len(current_cycle_list) > 2:
+                first_ref_dch_Ah = current_cycle_list[normalize_cycle - 2]['dch_Ah']
+                last_ref_dch_Ah = current_cycle_list[-2]['dch_Ah']
+                last_norm_dch = last_ref_dch_Ah / first_ref_dch_Ah
+
+            else:
+                first_ref_dch_Ah = np.nan
+                last_ref_dch_Ah = np.nan
+                last_norm_dch = np.nan
+            files_to_process.at[index, 'first_ref_dch_Ah'] = first_ref_dch_Ah
+            files_to_process.at[index, 'last_ref_dch_Ah'] = last_ref_dch_Ah
+            files_to_process.at[index, 'last_norm_dch'] = last_norm_dch
+
+        else:
+            print('Error: Couldn\'t find file ' + row['nda_file'])
+    files_to_process.to_csv(csv_filename, index=False)
