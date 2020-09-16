@@ -4,17 +4,22 @@ from tkinter import filedialog
 
 import tkinter.font as font
 
-root = Tk(className=" Choose Data Processing Program")
+# Base Pop up window
+root = Tk(className="Choose Data Processing Program")
 
+# Controls Size of Button Font
 myFont = font.Font(size=25)
 
-def exec_cycling_proc():
-
+def exec_cycling_proc(): # Function ran if Process Cycling is chosen
+    # Get the correct file locations
     csv_filename = filedialog.askopenfilename(initialdir='U:\\Cell Testing\\Cycle Data', title='Pick Your Base CSV File.')
     out_path = filedialog.askdirectory(initialdir='U:\\Cell Testing\\Cycle Data', title='Where Do You Want Your Processed Data?')
     nda_path = filedialog.askdirectory(initialdir='U:\\Cell Testing\\Cycle Data', title='Where Are Your NDA Files?')
 
+    # If given a location for every needed file, run the processor
+    # otherwise no processing and give an error message
     if (csv_filename != '' and out_path != '' and nda_path != ''):
+
         proc.process_long_term_cycling_new(csv_filename, out_path, nda_path)
         root.destroy()
         man_close = input("Press Close to Exit")

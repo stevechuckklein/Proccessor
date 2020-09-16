@@ -632,7 +632,7 @@ def save_datapoints(cycle_list, out_filename, csv_line_order=['record_id', 'test
     outfile.close()
 
 
-def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=False, output_datapoints=False):
+def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=False, output_datapoints=True):
 
     files_to_process = pd.read_csv(csv_filename)
 
