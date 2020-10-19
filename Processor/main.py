@@ -61,7 +61,7 @@ def exec_olip_proc():
 
 b1 = Button(root, command=exec_cycling_proc, text="Process Cycling", height="2", width="15")
 b2 = Button(root, command=exec_formation_proc, text="Process Formation", height="2", width="15")
-b3 = Button(root, command=exec_olip_proc, text="Process OLiP", height="2", width="15")
+b3 = Button(root, command=exec_olip_proc, text= "Process\nNormalized Cycling", height="2", width="15")
 
 b1['font'] = myFont
 b2['font'] = myFont
