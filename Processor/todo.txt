@@ -1,0 +1,11 @@
+- Figure out why Normalized Cycling program kicks after just doing one cell
+
+- Figure out why normalized discharge doesn't calculate if the first cycle is empty (None) or rest cycle
+	* Move to next step if current == 0??
+
+- Fix the Normalized Cycling program to start further out in the directories
+	* Fixed 11/4/2020
+	
+- There is a NaN error when you delete information out of the base CSV file, there is some kind of data residual that the processor tries to process and throws an error.
+	* Working solution is completely delete rows in base CSV file
+	* Better solution is if the cell is NaN, skip it

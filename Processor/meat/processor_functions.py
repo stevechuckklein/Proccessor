@@ -366,6 +366,7 @@ def process_cycle_list_new(cycle_list, normalize_to_cycle=1, electrode_area=np.n
         norm_dch_Ah = 0.0
     else:
         norm_dch_Ah = cycle_list[normalize_to_cycle - 1]['datapoints'][-1]['dch_Ah'] / 360000000
+        print("norm_dch_Ah is: " + str(norm_dch_Ah))
     # Assume first cycle is C/20 and find the first C/3 cycle
     ref_cycle_norm_ah = cycle_list[0]['datapoints'][-1]['dch_Ah'] / 360000000
     reg_cycle_norm_ah = get_first_reg_dch(cycle_list)
@@ -507,7 +508,7 @@ def get_norm_death(cycle_list, death_percent=0.8, consecutive_cycles=2):
     potential_found = []
     for cycle in cycle_list[:-1]:
         try:
-            if cycle['norm_dch'] < death_percent:
+            if cycle['norm_dch'] != None and cycle['norm_dch'] < death_percent:
                 count += 1
                 potential_found.append(cycle['cycle_id'])
                 if count >= consecutive_cycles:
@@ -688,7 +689,7 @@ def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_proces
 
         else:
             print('Error: Couldn\'t find file ' + str(row['nda_file']))
-            if os.path.isfile(nda_path + 'Finished\\' + row['nda_file']):
+            if os.path.isfile(nda_path + 'Finished\\' + str(row['nda_file'])):
                 print('   File ' + row['nda_file'] + ' is in Finished folder')
 
     files_to_process.to_csv(csv_filename, index=False)

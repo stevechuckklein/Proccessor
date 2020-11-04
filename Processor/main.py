@@ -45,9 +45,9 @@ def exec_formation_proc():
 
 def exec_olip_proc():
 
-    csv_filename = filedialog.askopenfilename(initialdir='U:\\Cell Testing\\OLiP Data\\Processed Data', title='Pick Your Base CSV File.')
-    out_path = filedialog.askdirectory(initialdir='U:\\Cell Testing\\OLiP Data\\Processed Data', title='Where Do You Want Your Processed Data?')
-    nda_path = filedialog.askdirectory(initialdir='U:\\Cell Testing\\OLiP Data\\Processed Data', title='Where Are Your NDA Files?')
+    csv_filename = filedialog.askopenfilename(initialdir='U:\\Cell Testing', title='Pick Your Base CSV File.')
+    out_path = filedialog.askdirectory(initialdir='U:\\Cell Testing', title='Where Do You Want Your Processed Data?')
+    nda_path = filedialog.askdirectory(initialdir='U:\\Cell Testing', title='Where Are Your NDA Files?')
 
     if (csv_filename != '' and out_path != '' and nda_path != ''):
         root.destroy()
