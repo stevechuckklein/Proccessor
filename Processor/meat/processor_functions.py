@@ -366,7 +366,7 @@ def process_cycle_list_new(cycle_list, normalize_to_cycle=1, electrode_area=np.n
         norm_dch_Ah = 0.0
     else:
         norm_dch_Ah = cycle_list[normalize_to_cycle - 1]['datapoints'][-1]['dch_Ah'] / 360000000
-        print("norm_dch_Ah is: " + str(norm_dch_Ah))
+        # print("norm_dch_Ah is: " + str(norm_dch_Ah))
     # Assume first cycle is C/20 and find the first C/3 cycle
     ref_cycle_norm_ah = cycle_list[0]['datapoints'][-1]['dch_Ah'] / 360000000
     reg_cycle_norm_ah = get_first_reg_dch(cycle_list)
@@ -393,6 +393,9 @@ def process_cycle_list_new(cycle_list, normalize_to_cycle=1, electrode_area=np.n
         else:
             cycle['dch_V'] = last_dp.get('dch_Wh', 0) / last_dp.get('dch_Ah', 0)
         cycle['delta_V'] = cycle['chg_V'] - cycle['dch_V']
+        cycle['chg_mAh'] = cycle['chg_Ah'] * 1000
+        cycle['dch_mAh'] = cycle['dch_Ah'] * 1000
+
         # normalizing stuff
         try:
             cycle['norm_dch'] = cycle['dch_Ah'] / norm_dch_Ah
@@ -634,6 +637,7 @@ def save_datapoints(cycle_list, out_filename, csv_line_order=['record_id', 'test
 
 
 def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_processing=False, output_datapoints=True):
+    print("running")
 
     files_to_process = pd.read_csv(csv_filename)
 
@@ -666,7 +670,7 @@ def process_long_term_cycling_new(csv_filename, out_path, nda_path, force_proces
                                                     'cycle_time', 'area_cap'], omit_last_cycle=True)
                 else:
                     save_cycle_data(current_cycle_list, os.path.join(out_path, row['out_file']), omit_last_cycle=True,
-                                    csv_line_order=['cycle_id', 'chg_Ah', 'dch_Ah', 'CE', 'chg_Wh', 'dch_Wh', 'chg_V',
+                                    csv_line_order=['cycle_id', 'chg_Ah','chg_mAh', 'dch_Ah', 'dch_mAh', 'CE', 'chg_Wh', 'dch_Wh', 'chg_V',
                                                     'dch_V', 'delta_V', 'norm_dch', 'chg_time', 'dch_time',
                                                     'cycle_time', 'reg_norm_dch', 'ref_norm_dch'])
 
@@ -756,7 +760,7 @@ def process_olip(csv_filename, out_path, nda_path, cycle_num):
             # save_datapoints([current_cycle_list[e] for e in (1,-2)], os.path.join(out_path, row['out_file']))
 
             if len(current_cycle_list) > 2:
-                first_ref_dch_Ah = current_cycle_list[normalize_cycle - 2]['dch_Ah']
+                first_ref_dch_Ah = current_cycle_list[normalize_cycle - 0]['dch_Ah']
                 last_ref_dch_Ah = current_cycle_list[-2]['dch_Ah']
                 last_norm_dch = last_ref_dch_Ah / first_ref_dch_Ah
 
